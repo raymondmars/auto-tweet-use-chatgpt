@@ -1,6 +1,5 @@
-import time
 import json
-import os
+import time
 from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -51,9 +50,13 @@ class Titter:
 
       self.driver.get(self.host_domain)
 
-      accept_cookie_button = self.driver.find_element(By.XPATH, "//span[text()='Accept all cookies']")
-      if accept_cookie_button.is_displayed():
-        accept_cookie_button.click()
+      try:
+        # find accept cookie button and click it
+        accept_cookie_button = self.get_element_until_it_visiable("//span[text()='Accept all cookies']")
+        if accept_cookie_button.is_displayed():
+          accept_cookie_button.click()
+      except:
+        print("accept cookies button is not exist.")
 
       # click on the Login button
       login_button = self.get_element_until_it_visiable("//a[@data-testid='loginButton']")
@@ -101,12 +104,11 @@ class Titter:
       if send_message_button != None and send_message_button.is_displayed():
         data_block = self.get_element_until_it_visiable("//div[@data-contents='true']")
         if data_block.is_displayed():
-          # data_block.click()
           data_block.send_keys(message)
+          # time.sleep(5)
           send_message_button.click()
           print('send message successed.')
 
-        time.sleep(10)
       else:
         print("send message failed.")
 
